@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Signage Masjid</title>
+  <style>
+    :root{
+      --bg1:#07130f;
+      --bg2:#0b2018;
+      --panel:rgba(10,25,20,.82);
+      --border:rgba(212,175,55,.24);
+      --gold:#f3e1a0;
+      --white:#f7f8f8;
+      --muted:#b9c3bf;
+      --good:#45d483;
+      --danger:#ff7a7a;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(212,175,55,.10), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(69,212,131,.10), transparent 28%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:var(--white);
+    }
+
+    .screen{
+      width:100vw;
+      height:100vh;
+      padding:24px;
+      display:grid;
+      grid-template-rows:118px 1fr 72px;
+      gap:18px;
+    }
+
+    .header,.card,.ticker{
+      background:var(--panel);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+
+    .header{
+      border-radius:28px;
+      display:grid;
+      grid-template-columns:1.5fr 1fr auto;
+      align-items:center;
+      padding:22px 28px;
+      gap:18px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .header::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg,transparent,rgba(212,175,55,.08),transparent);
+      pointer-events:none;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      min-width:0;
+    }
+
+    .brand-badge{
+      width:68px;
+      height:68px;
+      border-radius:20px;
+      background:linear-gradient(145deg,rgba(212,175,55,.18),rgba(255,255,255,.05));
+      border:1px solid rgba(212,175,55,.3);
+      display:grid;
+      place-items:center;
+      font-size:34px;
+      flex-shrink:0;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:38px;
+      line-height:1;
+      letter-spacing:.5px;
+    }
+
+    .brand p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:15px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .period{
+      justify-self:center;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      padding:14px 18px;
+      border-radius:18px;
+      min-width:250px;
+    }
+
+    .period-label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .period-value{
+      font-size:24px;
+      font-weight:700;
+      color:var(--gold);
+    }
+
+    .clock-box{
+      text-align:right;
+      min-width:280px;
+    }
+
+    .clock{
+      font-size:52px;
+      line-height:1;
+      font-weight:800;
+      color:var(--gold);
+      letter-spacing:1px;
+    }
+
+    .date{
+      margin-top:8px;
+      font-size:18px;
+      color:var(--muted);
+    }
+
+    .main{
+      display:grid;
+      grid-template-columns:.95fr 1.35fr;
+      gap:18px;
+      min-height:0;
+    }
+
+    .card{
+      border-radius:28px;
+      padding:22px;
+      min-height:0;
+      overflow:hidden;
+      position:relative;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .card-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+      gap:12px;
+      flex-shrink:0;
+    }
+
+    .card-title h2{
+      margin:0;
+      font-size:30px;
+      letter-spacing:.3px;
+    }
+
+    .tag{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(212,175,55,.14);
+      border:1px solid rgba(212,175,55,.24);
+      color:var(--gold);
+      font-size:13px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.7px;
+      white-space:nowrap;
+    }
+
+    .finance-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      flex:1;
+      min-height:0;
+    }
+
+    .metric{
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:24px;
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .metric::before{
+      content:"";
+      position:absolute;
+      width:150px;
+      height:150px;
+      border-radius:999px;
+      top:-52px;
+      right:-34px;
+      background:rgba(255,255,255,.04);
+    }
+
+    .metric-label{
+      color:var(--muted);
+      font-size:20px;
+      position:relative;
+      z-index:1;
+    }
+
+    .metric-value{
+      font-size:42px;
+      font-weight:800;
+      line-height:1.12;
+      word-break:break-word;
+      position:relative;
+      z-index:1;
+    }
+
+    .metric.income .metric-value{color:var(--good)}
+    .metric.expense .metric-value{color:var(--danger)}
+    .metric.balance .metric-value{color:var(--gold)}
+
+    .metric-note{
+      font-size:14px;
+      color:var(--muted);
+      position:relative;
+      z-index:1;
+    }
+
+    .kajian-wrap{
+      display:grid;
+      grid-template-rows:auto 1fr;
+      flex:1;
+      min-height:0;
+    }
+
+    .kajian-head{
+      display:grid;
+      grid-template-columns:112px 1.45fr 1fr 1fr;
+      gap:12px;
+      color:var(--muted);
+      font-size:14px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding:0 12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      flex-shrink:0;
+    }
+
+    .kajian-list{
+      min-height:0;
+      overflow:auto;
+      position:relative;
+      padding-top:12px;
+    }
+
+    .kajian-track{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:100%;
+    }
+
+    .kajian-row{
+      display:grid;
+      grid-template-columns:112px 1.45fr 1fr 1fr;
+      gap:12px;
+      align-items:center;
+      padding:14px 12px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .kajian-row.today{
+      background:rgba(212,175,55,.18);
+      border:2px solid rgba(212,175,55,.62);
+      box-shadow:0 0 20px rgba(212,175,55,.25);
+      transform:scale(1.01);
+    }
+
+    .kajian-row.today .tema,
+    .kajian-row.today .meta{
+      color:#fff9df;
+    }
+
+    .kajian-row.today .sub{
+      color:#f0e0aa;
+    }
+
+    .date-chip{
+      background:rgba(212,175,55,.14);
+      border:1px solid rgba(212,175,55,.24);
+      color:var(--gold);
+      border-radius:16px;
+      padding:10px 8px;
+      text-align:center;
+      font-weight:700;
+      font-size:13px;
+      line-height:1.25;
+    }
+
+    .kajian-row.today .date-chip{
+      background:rgba(255,255,255,.14);
+      border-color:rgba(255,255,255,.32);
+      color:#fff9df;
+    }
+
+    .tema{
+      font-size:26px;
+      font-weight:800;
+      line-height:1.2;
+      margin-bottom:4px;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .meta{
+      font-size:20px;
+      font-weight:700;
+      line-height:1.3;
+    }
+
+    .empty-state{
+      display:grid;
+      place-items:center;
+      min-height:100%;
+      color:var(--muted);
+      text-align:center;
+      font-size:22px;
+      padding:30px;
+      border:1px dashed rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .ticker{
+      border-radius:20px;
+      display:grid;
+      grid-template-columns:215px 1fr;
+      align-items:center;
+      overflow:hidden;
+    }
+
+    .ticker-label{
+      height:100%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(90deg,rgba(212,175,55,.22),rgba(212,175,55,.08));
+      color:var(--gold);
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.8px;
+    }
+
+    .ticker-body{
+      position:relative;
+      overflow:hidden;
+      height:100%;
+      display:flex;
+      align-items:center;
+    }
+
+    .ticker-text{
+      position:absolute;
+      white-space:nowrap;
+      font-size:24px;
+      font-weight:600;
+      animation:tickerMove 30s linear infinite;
+      padding-left:100%;
+    }
+
+    @keyframes tickerMove{
+      0%{transform:translateX(0)}
+      100%{transform:translateX(-100%)}
+    }
+
+    @media (max-width:1600px){
+      .screen{padding:18px;grid-template-rows:108px 1fr 64px}
+      .header{padding:18px 22px}
+      .brand h1{font-size:32px}
+      .clock{font-size:42px}
+      .metric-label{font-size:17px}
+      .metric-value{font-size:34px}
+      .tema{font-size:21px}
+      .meta{font-size:17px}
+      .ticker-label{font-size:18px}
+      .ticker-text{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-badge">🕌</div>
+        <div>
+          <h1 id="masjidName">Masjid Al-Ikhlas</h1>
+          <p id="masjidSubtitle">Digital Signage Kajian & Keuangan Masjid</p>
+        </div>
+      </div>
+
+      <div class="period">
+        <div class="period-label">Periode Laporan</div>
+        <div class="period-value" id="reportPeriod">Maret 2026</div>
+      </div>
+
+      <div class="clock-box">
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="date" id="date">Senin, 9 Maret 2026</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section>
+        <div class="card">
+          <div class="card-title">
+            <h2>Ringkasan Keuangan</h2>
+          </div>
+
+          <div class="finance-grid">
+            <div class="metric balance">
+              <div class="metric-label">Saldo Awal</div>
+              <div class="metric-value" id="saldoAwalValue">Rp 0</div>
+              <div class="metric-note">Saldo awal periode laporan</div>
+            </div>
+
+            <div class="metric income">
+              <div class="metric-label">Penerimaan</div>
+              <div class="metric-value" id="incomeValue">Rp 0</div>
+              <div class="metric-note">Infaq, sedekah, donasi</div>
+            </div>
+
+            <div class="metric expense">
+              <div class="metric-label">Pengeluaran</div>
+              <div class="metric-value" id="expenseValue">Rp 0</div>
+              <div class="metric-note">Operasional dan kegiatan</div>
+            </div>
+
+            <div class="metric balance">
+              <div class="metric-label">Saldo Akhir</div>
+              <div class="metric-value" id="balanceValue">Rp 0</div>
+              <div class="metric-note">Saldo kas saat ini</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="card">
+          <div class="card-title">
+            <h2>Daftar Kajian</h2>
+            <span class="tag">Kajian Hari Ini di Atas</span>
+          </div>
+
+          <div class="kajian-wrap">
+            <div class="kajian-head">
+              <div>Tanggal</div>
+              <div>Kajian</div>
+              <div>Pemateri</div>
+              <div>Waktu & Lokasi</div>
+            </div>
+
+            <div class="kajian-list">
+              <div class="kajian-track" id="kajianTrack"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="ticker">
+      <div class="ticker-label">PENGUMUMAN</div>
+      <div class="ticker-body">
+        <div class="ticker-text" id="tickerText">Selamat datang di masjid.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwF33XUxzBEIGxOHWBcAvsTlp4oicsKAU2oE9mMqKo7teMeOvtwCihjQ2ADFvFtB81kYQ/exec";
+    const REFRESH_MS = 60 * 1000;
+    const HARD_RELOAD_MS = 15 * 60 * 1000;
+
+    function rupiah(value){
+      return new Intl.NumberFormat("id-ID",{
+        style:"currency",
+        currency:"IDR",
+        maximumFractionDigits:0
+      }).format(Number(value || 0));
+    }
+
+    function updateClock(){
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString("id-ID",{
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      });
+      document.getElementById("date").textContent = now.toLocaleDateString("id-ID",{
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      });
+    }
+
+    function setHeader(data){
+      document.getElementById("masjidName").textContent = data.masjidName || "Masjid";
+      document.getElementById("masjidSubtitle").textContent = data.subtitle || "Digital Signage Kajian & Keuangan Masjid";
+      document.getElementById("reportPeriod").textContent = data.reportPeriod || "Periode Aktif";
+    }
+
+    function setFinance(data){
+      document.getElementById("saldoAwalValue").textContent = rupiah(data.saldoAwal);
+      document.getElementById("incomeValue").textContent = rupiah(data.income);
+      document.getElementById("expenseValue").textContent = rupiah(data.expense);
+      document.getElementById("balanceValue").textContent = rupiah(data.balance);
+    }
+
+    function normalizeDateString(value){
+      return String(value || "").toLowerCase().replace(/\s+/g, " ").trim();
+    }
+
+    function isKajianToday(text){
+      const raw = normalizeDateString(text);
+      if (!raw) return false;
+
+      const now = new Date();
+      const dayNumber = String(now.getDate());
+      const dayNumber2 = String(now.getDate()).padStart(2, "0");
+      const monthShort = now.toLocaleDateString("id-ID", { month:"short" }).toLowerCase().replace(".", "");
+      const monthLong = now.toLocaleDateString("id-ID", { month:"long" }).toLowerCase();
+      const weekday = now.toLocaleDateString("id-ID", { weekday:"long" }).toLowerCase();
+      const clean = raw.replace(/\./g, "");
+
+      return (
+        clean.includes(dayNumber + " " + monthShort) ||
+        clean.includes(dayNumber2 + " " + monthShort) ||
+        clean.includes(dayNumber + " " + monthLong) ||
+        clean.includes(dayNumber2 + " " + monthLong) ||
+        clean.includes(weekday)
+      );
+    }
+
+    function sortKajian(items){
+      return [...items].sort((a, b) => {
+        const aToday = isKajianToday(a.tanggal) ? 1 : 0;
+        const bToday = isKajianToday(b.tanggal) ? 1 : 0;
+        if (aToday !== bToday) return bToday - aToday;
+        return 0;
+      });
+    }
+
+    function setKajian(kajianList){
+      const track = document.getElementById("kajianTrack");
+      const items = Array.isArray(kajianList) ? sortKajian(kajianList) : [];
+
+      if (!items.length){
+        track.innerHTML = '<div class="empty-state">Belum ada data kajian.<br>Silakan isi Google Sheet.</div>';
+        return;
+      }
+
+      const rows = items.map(item => {
+        const isToday = isKajianToday(item.tanggal);
+        const tanggal = String(item.tanggal || "-").replace(/\n/g, "<br>");
+        const waktuLokasi = String(item.waktuLokasi || "-").replace(/\n/g, "<br>");
+
+        return `
+          <div class="kajian-row ${isToday ? "today" : ""}">
+            <div class="date-chip">${tanggal}</div>
+            <div>
+              <div class="tema">${item.tema || "Kajian"}</div>
+              <div class="sub">${item.kategori || "-"}</div>
+            </div>
+            <div class="meta">${item.pemateri || "-"}</div>
+            <div class="meta">${waktuLokasi}</div>
+          </div>
+        `;
+      }).join("");
+
+      track.innerHTML = rows;
+    }
+
+    function setTicker(text){
+      document.getElementById("tickerText").textContent =
+        text || "Selamat datang di masjid. Semoga Allah memberkahi jamaah yang hadir.";
+    }
+
+    async function loadData(){
+      try{
+        const res = await fetch(API_URL + "?t=" + Date.now(), { cache:"no-store" });
+        if (!res.ok) throw new Error("Gagal mengambil data dari Apps Script");
+        const data = await res.json();
+
+        console.log("DATA API:", data);
+
+        setHeader(data);
+        setFinance(data);
+        setKajian(data.kajian);
+        setTicker(data.ticker);
+      } catch (err){
+        console.error(err);
+        document.getElementById("kajianTrack").innerHTML =
+          '<div class="empty-state">Gagal memuat data.<br>Cek Apps Script / koneksi internet.</div>';
+        setTicker("Koneksi data Google Sheet bermasalah.");
+      }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+    loadData();
+    setInterval(loadData, REFRESH_MS);
+    setInterval(() => window.location.reload(), HARD_RELOAD_MS);
+  </script>
+</body>
+</html>
