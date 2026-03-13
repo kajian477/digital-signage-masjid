@@ -563,7 +563,7 @@
     <footer class="ticker">
       <div class="ticker-label">PENGUMUMAN</div>
       <div class="ticker-body">
-        <div class="ticker-text" id="tickerText">Selamat datang di masjid.</div>
+        <div class="ticker-text" id="tickerText">Selamat datang di masjid Al Ikhlas.</div>
       </div>
     </footer>
   </div>
@@ -648,7 +648,7 @@
       const items = Array.isArray(kajianList) ? sortKajian(kajianList) : [];
 
       if (!items.length){
-        track.innerHTML = '<div class="empty-state">Belum ada data kajian.<br>Silakan isi Google Sheet.</div>';
+        track.innerHTML = '<div class="empty-state">Belum ada data kajian.<br>Silakan isi.</div>';
         return;
       }
 
@@ -675,7 +675,7 @@
 
     function setTicker(text){
       document.getElementById("tickerText").textContent =
-        text || "Selamat datang di masjid. Semoga Allah memberkahi jamaah yang hadir.";
+        text || "";
     }
 
     async function loadData(){
